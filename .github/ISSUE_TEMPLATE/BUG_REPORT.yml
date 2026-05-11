@@ -1,0 +1,59 @@
+name: 🐜 버그 보고
+description: 버그 수정을 위해 보고서를 작성합니다.
+title: "[BUG]: "
+labels: "버그"
+type: bug
+body:
+  - type: input
+    id: bug_desc
+    attributes:
+      label: "버그 설명"
+      description: "명확하고 자세하게 어떤 문제가 있는지 설명하세요"
+      placeholder: "예: 버튼을 클릭했을 때 아무런 동작이 일어나지 않습니다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug_steps
+    attributes:
+      label: "버그 발생 상황"
+      description: "어떤 상황에서 발생했나요?"
+      placeholder: "1. '...' 페이지로 이동\n2. '....' 버튼을 클릭\n3. 스크롤을 '....'까지 내림\n4. 에러 발생"
+    validations:
+      required: true
+
+  - type: input
+    id: expected_behavior
+    attributes:
+      label: "예상되는 동작"
+      description: "버그나 문제가 없었다면, 원래 어떠한 동작을 해야되는지 설명해주세요"
+      placeholder: "예: 버튼을 클릭했을 때, 해당 페이지로 이동해야 합니다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: "스크린샷"
+      description: "필요하다면, 설명을 위해 스크린샷을 첨부하세요"
+      placeholder: "예: ![screenshot](url)"
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: "환경"
+      description: "다음 정보를 채워넣어주세요"
+      placeholder: "- 기기: [e.g. Galaxy22+, Desktop]\n- OS: [e.g. Android15, Window11]\n- Browser [e.g. stock browser, chrome, firefox]\n- Version [e.g. 22]"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: "추가 내용"
+      description: "추가적인 내용이 있다면 작성해주세요"
+      placeholder: "예: 이 버그는 특정 네트워크 환경에서만 발생합니다."
+    validations:
+      required: false

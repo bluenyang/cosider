@@ -1,0 +1,49 @@
+name: 🗓️ 기획된 기능 추가
+description: 기획서에 작성된 기능을 추가합니다.
+title: "[FEAT] "
+labels: "향상"
+type: feature
+body:
+  - type: textarea
+    id: feature_background
+    attributes:
+      label: "기능 추가 배경"
+      description: "명확하고 자세하게 어떤 문제(불편함)이 있었는지 설명해주세요"
+      placeholder: "예: 난 항상 ~때문에 ~할 수 없어서..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature_description
+    attributes:
+      label: "추가할 기능"
+      description: "어떠한 기능이 있었으면 좋겠는지 명확하고 자세하게 설명해주세요"
+      placeholder: " 예: 화면을 좌우로 스와이프 했을 때, 다음 페이지로 이동해야 합니다."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternative_solutions
+    attributes:
+      label: "고려 사항"
+      description: "만약 고려하고 있는 다른 대안이나 해결방법이 있다면 명확하고 자세하게 설명해주세요"
+      placeholder: "예: ~~ 링크을 클릭했을 때, 해당 페이지로 이동해야 합니다."
+    validations:
+      required: false
+
+  - type: textarea
+    id: caution_notes
+    attributes:
+      label: "주의 사항"
+      description: "만약 특별히 주의해야 할 사항이 있다면 작성해주세요"
+      placeholder: "예: 이 기능은 특정 네트워크 환경에서만 필요합니다."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: "추가 내용"
+      description: "추가적인 내용이 있다면 작성해주세요"
+    validations:
+      required: false

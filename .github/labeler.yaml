@@ -1,0 +1,26 @@
+# backend 라벨: server 관련 코드 수정 시
+backend:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/server/**/*'
+
+# frontend 라벨: web 관련 코드 수정 시
+frontend:
+  - changed-files:
+      - any-glob-to-any-file: 'apps/web/**/*'
+
+# shared 라벨: 공통 패키지 수정 시
+shared:
+  - changed-files:
+      - any-glob-to-any-file: 'packages/**/*'
+
+# cicd 라벨: GitHub Actions 설정 수정 시
+cicd:
+  - changed-files:
+      - any-glob-to-any-file: '.github/workflows/**/*'
+
+# documentation 라벨: documentation 관련 코드 수정 시
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: 'docs/**/*'
+      - any-glob-to-any-file: 'LICENSE'
+      - any-glob-to-any-file: 'README.md'
