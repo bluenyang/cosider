@@ -1,6 +1,4 @@
-import { EPriority } from '../common/priority.enum';
-
-import { ETaskStatus } from './enums/task-status.enum';
+import { EPriority, ETaskStatus } from '@cosider/shared';
 
 export class TaskResponseDto {
   id!: string;

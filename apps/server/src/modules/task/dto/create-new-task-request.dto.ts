@@ -1,3 +1,4 @@
+import { EPriority, ETaskStatus } from '@cosider/shared';
 import {
   IsArray,
   IsDateString,
@@ -7,10 +8,6 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-
-import { EPriority } from '../common/priority.enum';
-
-import { ETaskStatus } from './enums/task-status.enum';
 
 export class CreateNewTaskRequestDto {
   @IsString()
