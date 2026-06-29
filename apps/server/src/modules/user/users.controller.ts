@@ -1,58 +1,36 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-  Query,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, SerializeOptions, UseGuards } from '@nestjs/common';
 
-import {
-  CheckHandleExistsResponse,
-  DeactivateReqeust,
-  DeactivateResponse,
-  RestoreRequest,
-  RestoreResponse,
-  UserProfileResponse,
-} from './dto';
+import { CurrentUser } from '../auth/decorator';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+
+import { UserProfileResponse } from './dto';
+import { AuthUserResponse } from './dto/auth-user-response.dto';
 import { UsersService } from './users.service';
-// import { DeactivateGuard } from '../guards/deactivate.guard'
+
+import { CheckExistsResponse } from '@/common/model';
+import type { AuthenticatedUser } from '@/types/auth';
 
 @Controller('api/v1/users')
+@SerializeOptions({ excludeExtraneousValues: true })
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('deactivate')
-  @HttpCode(HttpStatus.OK)
-  // @UseGuards(DeactivateGuard)
-  deactivate(@Body() deactivate: DeactivateReqeust): DeactivateResponse {
-    console.log(deactivate);
-    return {
-      message: '계정 삭제가 완료 되었습니다.',
-    };
-  }
-
-  @Post('restore')
-  @HttpCode(HttpStatus.OK)
-  restore(@Body() restore: RestoreRequest): RestoreResponse {
-    console.log(restore);
-    return {
-      message: '계정이 복구되었습니다.',
-    };
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMyProfile(@CurrentUser() user: AuthenticatedUser): Promise<AuthUserResponse> {
+    const profile = await this.usersService.getProfile(user.handle);
+    return new AuthUserResponse(profile);
   }
 
   @Get(':handle')
-  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(JwtAuthGuard)
   async getProfile(@Param('handle') handle: string): Promise<UserProfileResponse> {
-    return await this.usersService.getProfile(handle);
+    const profile = await this.usersService.getProfile(handle);
+    return new UserProfileResponse(profile);
   }
 
   @Get('exists/handle')
-  checkHandleExists(@Query('handle') handle: string): CheckHandleExistsResponse {
-    return this.usersService.checkHandleExists(handle);
+  async checkHandleExists(@Query('handle') handle: string): Promise<CheckExistsResponse> {
+    return await this.usersService.checkHandleExists(handle);
   }
 }

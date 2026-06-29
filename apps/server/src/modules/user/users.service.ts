@@ -1,9 +1,11 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 
-import { CheckHandleExistsResponse, UserProfileResponse } from './dto';
+import { UserProfileResponse } from './dto';
 
 import { DB_CONNECTION } from '@/common/constants';
+import { UNAVAILABLE_HANDLES } from '@/common/constants/user.const';
+import { CheckExistsResponse } from '@/common/model';
 import type { DrizzleDB } from '@/database/drizzle.module';
 import { userProfiles, users } from '@/database/schema/user.schema';
 
@@ -14,8 +16,8 @@ export class UsersService {
     private readonly db: DrizzleDB,
   ) {}
 
+  // 프로필 조회
   async getProfile(handle: string): Promise<UserProfileResponse> {
-    // 1. Drizzle ORM 프로필 단건 조회
     const [profile] = await this.db
       .select()
       .from(users)
@@ -23,27 +25,33 @@ export class UsersService {
       .where(eq(userProfiles.handle, handle))
       .limit(1);
 
+    // 프로필이 없을 경우 404 반환
     if (!profile) {
-      throw new NotFoundException(`해당 핸들(${handle})을 가진 사용자를 찾을 수 없습니다.`);
+      throw new NotFoundException('USER_NOT_FOUND');
     }
 
-    // 3. DTO 반환
     return {
       handle: profile.user_profiles.handle,
-      email: profile.users.email,
       nickname: profile.user_profiles.nickname ?? '',
-      profileImageId: profile.user_profiles.profileImageId,
       techStacks: profile.user_profiles.techStacks as string[] | null,
       jobRole: profile.user_profiles.jobRole,
-    };
+      profileImageId: profile.user_profiles.profileImageId,
+    } satisfies UserProfileResponse;
   }
 
-  checkHandleExists(handle: string): CheckHandleExistsResponse {
-    // mock data
-    const unavailableHandles = ['admin', 'root'];
+  async checkHandleExists(handle: string): Promise<CheckExistsResponse> {
+    if (UNAVAILABLE_HANDLES.has(handle.toLowerCase())) {
+      return { isAvailable: false };
+    }
+
+    const [profile] = await this.db
+      .select({ id: userProfiles.id })
+      .from(userProfiles)
+      .where(eq(userProfiles.handle, handle))
+      .limit(1);
 
     return {
-      isAvailable: !unavailableHandles.includes(handle),
+      isAvailable: !profile,
     };
   }
 }
