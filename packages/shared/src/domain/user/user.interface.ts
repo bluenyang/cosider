@@ -37,5 +37,5 @@ export interface IUserProfile {
   jobRole: EJobRole;
   techStacks: string[] | null;
   updatedAt: string | null;
-  nicknameUpdatedAt: string | null;
+  handleUpdatedAt: string | null;
 }
