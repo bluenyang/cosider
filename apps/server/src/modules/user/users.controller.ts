@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 import { UserProfileResponse } from './dto';
 import { AuthUserResponse } from './dto/auth-user-response.dto';
+import { ParseUserHandlePipe } from './pipes/parse-user-handle.pipe';
 import { UsersService } from './users.service';
 
 import { CheckExistsResponse } from '@/common/model';
@@ -18,14 +19,16 @@ export class UsersController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getMyProfile(@CurrentUser() user: AuthenticatedUser): Promise<AuthUserResponse> {
-    const profile = await this.usersService.getProfile(user.handle);
+    const profile = await this.usersService.getProfile(user.userId);
     return new AuthUserResponse(profile);
   }
 
   @Get(':handle')
   @UseGuards(JwtAuthGuard)
-  async getProfile(@Param('handle') handle: string): Promise<UserProfileResponse> {
-    const profile = await this.usersService.getProfile(handle);
+  async getProfile(
+    @Param('handle', ParseUserHandlePipe) targetUserId: string,
+  ): Promise<UserProfileResponse> {
+    const profile = await this.usersService.getProfile(targetUserId);
     return new UserProfileResponse(profile);
   }
 

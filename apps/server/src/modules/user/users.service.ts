@@ -17,12 +17,18 @@ export class UsersService {
   ) {}
 
   // 프로필 조회
-  async getProfile(handle: string): Promise<UserProfileResponse> {
+  async getProfile(userId: string): Promise<UserProfileResponse> {
     const [profile] = await this.db
-      .select()
+      .select({
+        handle: userProfiles.handle,
+        nickname: userProfiles.nickname,
+        techStacks: userProfiles.techStacks,
+        jobRole: userProfiles.jobRole,
+        profileImageId: userProfiles.profileImageId,
+      })
       .from(users)
       .innerJoin(userProfiles, eq(users.id, userProfiles.userId))
-      .where(eq(userProfiles.handle, handle))
+      .where(eq(userProfiles.userId, userId))
       .limit(1);
 
     // 프로필이 없을 경우 404 반환
@@ -30,13 +36,7 @@ export class UsersService {
       throw new NotFoundException('USER_NOT_FOUND');
     }
 
-    return {
-      handle: profile.user_profiles.handle,
-      nickname: profile.user_profiles.nickname ?? '',
-      techStacks: profile.user_profiles.techStacks as string[] | null,
-      jobRole: profile.user_profiles.jobRole,
-      profileImageId: profile.user_profiles.profileImageId,
-    } satisfies UserProfileResponse;
+    return profile;
   }
 
   async checkHandleExists(handle: string): Promise<CheckExistsResponse> {
