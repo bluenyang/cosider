@@ -1,14 +1,18 @@
 <script setup lang="ts">
   import type { ICreateWorkspaceRequest } from '@cosider/shared';
+  import { EFileVisibility } from '@cosider/shared';
   import type { FormError, FormSubmitEvent } from '@nuxt/ui';
 
   import { useDebounce } from '~/composables/use-debounce';
+  import { useFileUpload } from '~/composables/use-file-upload';
   import { useWorkspaceStore } from '~/stores/workspace';
 
   const isOpen = defineModel<boolean>({ default: false });
   const { t } = useI18n();
   const workspaceStore = useWorkspaceStore();
+  const toast = useToast();
   const { checkSlugAvailability } = useWorkspace();
+  const { upload } = useFileUpload();
 
   const form = reactive<ICreateWorkspaceRequest>({
     name: '',
@@ -71,7 +75,6 @@
   }, 500);
 
   // image upload
-  // TODO: presigned URL → S3 업로드 연결 필요 (백엔드 완성 후)
   const logoFile = ref<File | null>(null);
   const previewUrl = ref<string | null>(null);
   const fileError = ref<string | null>(null);
@@ -122,9 +125,26 @@
   }
 
   async function onSubmit(event: FormSubmitEvent<typeof form>) {
-    const success = await workspaceStore.createWorkspace(event.data);
-    if (success) {
-      isOpen.value = false;
+    try {
+      if (logoFile.value) {
+        const { uploadToken } = await upload({
+          file: logoFile.value,
+          endpoint: '/api/v1/files/upload-url',
+          visibility: EFileVisibility.PUBLIC,
+        });
+        form.uploadToken = uploadToken;
+      }
+
+      const success = await workspaceStore.createWorkspace(event.data);
+      if (success) {
+        isOpen.value = false;
+      }
+    } catch {
+      toast.add({
+        title: '오류',
+        description: '로고 업로드에 실패했습니다.',
+        color: 'error',
+      });
     }
   }
 
