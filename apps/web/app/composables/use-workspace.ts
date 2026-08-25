@@ -1,16 +1,31 @@
-import { EWorkspaceStatus, EWorkspaceUserRole } from '@cosider/shared';
+import {
+  EWorkspaceStatus,
+  EWorkspaceUserRole,
+  type IWorkspaceDetailResponse,
+  type IWorkspaceResponse,
+} from '@cosider/shared';
 import { z } from 'zod';
 
 // zod로 API 응답 런타임 검증 스키마
 export const WorkspaceResponseSchema = z.object({
   slug: z.string(),
   name: z.string(),
-  status: z.enum(Object.values(EWorkspaceStatus) as [string, ...string[]]),
+  status: z.nativeEnum(EWorkspaceStatus),
   description: z.string().nullable(),
   logoImageId: z.uuidv7().nullable(),
   createdAt: z.string(),
-  role: z.enum(Object.values(EWorkspaceUserRole) as [string, ...string[]]),
-});
+  role: z.nativeEnum(EWorkspaceUserRole),
+}) satisfies z.ZodType<IWorkspaceResponse>;
+
+export const WorkspaceDetailResponseSchema = WorkspaceResponseSchema.extend({
+  owner: z.object({
+    handle: z.string(),
+    nickname: z.string(),
+    profileImageId: z.uuidv7().nullable(),
+  }),
+  // TODO: 프로젝트 DTO 확정 후 구체적인 타입으로 변경
+  projects: z.array(z.record(z.string(), z.unknown())),
+}) satisfies z.ZodType<IWorkspaceDetailResponse>;
 
 export const WorkspaceListSchema = z.array(WorkspaceResponseSchema);
 
