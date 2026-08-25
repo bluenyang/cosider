@@ -1,7 +1,15 @@
-import type { ICreateWorkspaceRequest, IWorkspaceResponse } from '@cosider/shared';
+import type {
+  ICreateWorkspaceRequest,
+  IWorkspaceDetailResponse,
+  IWorkspaceResponse,
+} from '@cosider/shared';
 import { defineStore } from 'pinia';
 
-import { WorkspaceListSchema, WorkspaceResponseSchema } from '~/composables/use-workspace';
+import {
+  WorkspaceDetailResponseSchema,
+  WorkspaceListSchema,
+  WorkspaceResponseSchema,
+} from '~/composables/use-workspace';
 
 export const useWorkspaceStore = defineStore('workspace', () => {
   const { $api } = useNuxtApp();
@@ -12,6 +20,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
 
   /** Shell display contract — routing stays with feature owners. */
   const currentSlug = ref<string | null>(null);
+  const currentWorkspaceDetail = ref<IWorkspaceDetailResponse | null>(null);
 
   const currentWorkspace = computed(() => {
     if (currentSlug.value) {
@@ -67,6 +76,25 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
+  // 워크스페이스 상세 조회
+  async function fetchWorkspaceDetail(slug: string) {
+    isLoading.value = true;
+    try {
+      const data = await $api<IWorkspaceDetailResponse>(`/api/v1/workspaces/${slug}`);
+      currentWorkspaceDetail.value = WorkspaceDetailResponseSchema.parse(
+        data,
+      ) as IWorkspaceDetailResponse;
+    } catch {
+      toast.add({
+        title: '오류',
+        description: '워크스페이스 정보를 불러오지 못했습니다.',
+        color: 'error',
+      });
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   return {
     workspaces,
     isLoading,
@@ -75,5 +103,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     setCurrent,
     fetchWorkspaces,
     createWorkspace,
+    fetchWorkspaceDetail,
+    currentWorkspaceDetail,
   };
 });
