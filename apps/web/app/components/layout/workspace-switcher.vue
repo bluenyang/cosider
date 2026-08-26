@@ -21,6 +21,7 @@
             label: ws.name,
             onSelect: () => {
               workspaceStore.setCurrent(ws.slug);
+              navigateTo(`/w/${ws.slug}`);
             },
           }))
         : [{ label: t('workspace.switcher.empty'), disabled: true }];
