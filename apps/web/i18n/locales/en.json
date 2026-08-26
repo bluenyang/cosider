@@ -18,6 +18,7 @@
       "projects": "Projects",
       "documents": "Documents",
       "settings": "Settings",
+      "workspaceSettings": "Workspace Settings",
       "favorites": "Favorites",
       "newTask": "New Task"
     },

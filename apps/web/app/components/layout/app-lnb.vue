@@ -4,6 +4,8 @@
   const route = useRoute();
   const { t } = useI18n();
   const { open: openTaskCreate } = useModal(MODAL_IDS.TASK_CREATE);
+  const workspaceStore = useWorkspaceStore();
+  const currentSlug = computed(() => workspaceStore.currentWorkspace?.slug);
 
   const workspaceLinks = computed(() => [
     {
@@ -29,6 +31,12 @@
       icon: 'i-lucide-settings',
       label: t('shell.nav.settings'),
       match: '/settings',
+    },
+    {
+      to: `/w/${currentSlug.value}/settings`,
+      icon: 'i-lucide-settings',
+      label: t('shell.nav.workspaceSettings'),
+      match: `/w/${currentSlug.value}/settings`,
     },
   ]);
 
