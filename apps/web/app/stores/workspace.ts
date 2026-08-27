@@ -143,6 +143,26 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
+  // 워크스페이스 삭제 신청
+  async function deleteWorkspace(slug: string): Promise<boolean> {
+    try {
+      await $api(`/api/v1/workspaces/${slug}`, { method: 'DELETE' });
+      toast.add({
+        title: '성공',
+        description: '워크스페이스 삭제가 신청되었습니다.',
+        color: 'success',
+      });
+      return true;
+    } catch {
+      toast.add({
+        title: '오류',
+        description: '워크스페이스 삭제 신청에 실패했습니다.',
+        color: 'error',
+      });
+      return false;
+    }
+  }
+
   return {
     workspaces,
     isLoading,
@@ -155,5 +175,6 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     currentWorkspaceDetail,
     updateWorkspaceLogo,
     updateWorkspace,
+    deleteWorkspace,
   };
 });

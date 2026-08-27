@@ -7,18 +7,12 @@
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
 
   async function onDelete() {
-    const { $api } = useNuxtApp();
-    try {
-      await $api(`/api/v1/workspaces/${slug}`, { method: 'DELETE' });
-      isOpen.value = false;
-      router.push('/workspaces');
-    } catch {
-      const toast = useToast();
-      toast.add({
-        title: '오류',
-        description: '워크스페이스 삭제 신청에 실패했습니다.',
-        color: 'error',
-      });
+    async function onDelete() {
+      const success = await workspaceStore.deleteWorkspace(slug);
+      if (success) {
+        isOpen.value = false;
+        router.push('/workspaces');
+      }
     }
   }
 </script>
