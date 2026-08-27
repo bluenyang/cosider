@@ -27,6 +27,12 @@
     slug: workspace.value?.slug ?? '',
   });
 
+  watch(workspace, (newVal) => {
+    if (!newVal) return;
+    form.name = newVal.name;
+    form.slug = newVal.slug;
+  });
+
   const isDeleteModalOpen = ref(false);
 
   watch(logoFile, async (file) => {
