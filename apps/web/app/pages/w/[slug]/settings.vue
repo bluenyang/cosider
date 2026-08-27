@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <UTabs :items="items">
+    <UTabs :items="items" variant="link">
       <!-- General -->
       <template #general>
         <div class="mt-6 max-w-xl space-y-6">
