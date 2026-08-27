@@ -95,6 +95,30 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
+  // 워크스페이스 로고 수정
+  async function updateWorkspaceLogo(slug: string, uploadToken: string): Promise<boolean> {
+    try {
+      await $api(`/api/v1/workspaces/${slug}/logo`, {
+        method: 'PATCH',
+        body: { uploadToken, uploadUrl: null },
+      });
+      await fetchWorkspaceDetail(slug);
+      toast.add({
+        title: '성공',
+        description: '로고가 변경되었습니다.',
+        color: 'success',
+      });
+      return true;
+    } catch {
+      toast.add({
+        title: '오류',
+        description: '로고 변경에 실패했습니다.',
+        color: 'error',
+      });
+      return false;
+    }
+  }
+
   return {
     workspaces,
     isLoading,
@@ -105,5 +129,6 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     createWorkspace,
     fetchWorkspaceDetail,
     currentWorkspaceDetail,
+    updateWorkspaceLogo,
   };
 });

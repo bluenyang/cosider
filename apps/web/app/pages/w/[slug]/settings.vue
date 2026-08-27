@@ -1,14 +1,48 @@
 <script setup lang="ts">
   import type { TabsItem } from '@nuxt/ui';
+  import { EFileVisibility } from '@cosider/shared';
+  import { useFileUpload } from '~/composables/use-file-upload';
 
   const route = useRoute();
   const workspaceStore = useWorkspaceStore();
+  const config = useRuntimeConfig();
+  const toast = useToast();
+  const { upload } = useFileUpload();
 
   const slug = route.params.slug as string;
 
   await workspaceStore.fetchWorkspaceDetail(slug);
 
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
+  const logoUrl = computed(() =>
+    workspace.value?.logoImageId
+      ? `${config.public.apiBase}/api/v1/files/${workspace.value.logoImageId}`
+      : null,
+  );
+
+  const logoFile = ref<File | null>(null);
+  const previewUrl = ref<string | null>(null);
+
+  watch(logoFile, async (file) => {
+    if (!file) return;
+    if (previewUrl.value) URL.revokeObjectURL(previewUrl.value);
+    previewUrl.value = URL.createObjectURL(file);
+
+    try {
+      const { uploadToken } = await upload({
+        file,
+        endpoint: '/api/v1/files/upload-url',
+        visibility: EFileVisibility.PUBLIC,
+      });
+      await workspaceStore.updateWorkspaceLogo(slug, uploadToken);
+    } catch {
+      toast.add({
+        title: '오류',
+        description: '로고 업로드에 실패했습니다.',
+        color: 'error',
+      });
+    }
+  });
 
   const items: TabsItem[] = [
     { label: 'General', slot: 'general' },
@@ -38,16 +72,27 @@
 
           <!-- 로고 -->
           <div class="flex items-center gap-4">
-            <div
-              class="bg-primary flex h-20 w-20 items-center justify-center rounded-xl text-2xl font-bold text-white"
+            <UFileUpload
+              v-slot="{ open }"
+              v-model="logoFile"
+              accept="image/jpeg,image/png,image/webp"
+              :preview="false"
             >
-              {{ workspace?.name[0] }}
-            </div>
+              <div
+                class="bg-primary flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-2xl font-bold text-white"
+                @click="open()"
+              >
+                <img
+                  v-if="previewUrl ?? logoUrl"
+                  :src="(previewUrl ?? logoUrl)!"
+                  class="h-full w-full object-cover"
+                />
+                <span v-else>{{ workspace?.name[0] }}</span>
+              </div>
+            </UFileUpload>
             <div>
               <p class="font-medium">Workspace Logo</p>
               <p class="text-muted text-sm">We recommend an image of at least 400x400.</p>
-              <!-- TODO: 로고 변경 기능 (PATCH /:slug/logo) -->
-              <UButton variant="outline" size="xs" class="mt-2" disabled>Change Logo</UButton>
             </div>
           </div>
 
