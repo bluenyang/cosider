@@ -3,10 +3,11 @@
   const workspaceStore = useWorkspaceStore();
   const router = useRouter();
 
-  const slug = workspaceStore.currentWorkspace?.slug ?? '';
+  const slug = workspaceStore.currentWorkspace?.slug;
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
 
   async function onDelete() {
+    if (!slug) return;
     const success = await workspaceStore.deleteWorkspace(slug);
     if (success) {
       isOpen.value = false;

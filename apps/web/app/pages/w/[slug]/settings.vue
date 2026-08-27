@@ -37,6 +37,9 @@
 
   watch(logoFile, async (file) => {
     if (!file) return;
+
+    const previousPreviewUrl = previewUrl.value;
+
     if (previewUrl.value) URL.revokeObjectURL(previewUrl.value);
     previewUrl.value = URL.createObjectURL(file);
 
@@ -48,6 +51,7 @@
       });
       await workspaceStore.updateWorkspaceLogo(slug, uploadToken);
     } catch {
+      previewUrl.value = previousPreviewUrl;
       toast.add({
         title: '오류',
         description: '로고 업로드에 실패했습니다.',
@@ -57,11 +61,15 @@
   });
 
   async function onSave() {
-    await workspaceStore.updateWorkspace(slug, {
+    const success = await workspaceStore.updateWorkspace(slug, {
       name: form.name,
       slug: form.slug,
       description: workspace.value?.description ?? null,
     });
+
+    if (success && form.slug !== slug) {
+      await navigateTo(`/w/${form.slug}/settings`);
+    }
   }
 
   const items: TabsItem[] = [
