@@ -7,12 +7,10 @@
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
 
   async function onDelete() {
-    async function onDelete() {
-      const success = await workspaceStore.deleteWorkspace(slug);
-      if (success) {
-        isOpen.value = false;
-        router.push('/workspaces');
-      }
+    const success = await workspaceStore.deleteWorkspace(slug);
+    if (success) {
+      isOpen.value = false;
+      router.push('/workspaces');
     }
   }
 </script>
