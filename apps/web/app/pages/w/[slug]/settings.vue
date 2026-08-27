@@ -99,7 +99,7 @@
               :preview="false"
             >
               <div
-                class="bg-primary flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-2xl font-bold text-white"
+                class="bg-primary relative flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-xl text-2xl font-bold text-white"
                 @click="open()"
               >
                 <img
@@ -108,6 +108,12 @@
                   class="h-full w-full object-cover"
                 />
                 <span v-else>{{ workspace?.name[0] }}</span>
+                <!-- 호버 오버레이 -->
+                <div
+                  class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity hover:opacity-100"
+                >
+                  <UIcon name="i-lucide-camera" class="text-xl text-white" />
+                </div>
               </div>
             </UFileUpload>
             <div>
