@@ -22,6 +22,12 @@
 
   const logoFile = ref<File | null>(null);
   const previewUrl = ref<string | null>(null);
+  const form = reactive({
+    name: workspace.value?.name ?? '',
+    slug: workspace.value?.slug ?? '',
+  });
+
+  const isDeleteModalOpen = ref(false);
 
   watch(logoFile, async (file) => {
     if (!file) return;
@@ -43,6 +49,14 @@
       });
     }
   });
+
+  async function onSave() {
+    await workspaceStore.updateWorkspace(slug, {
+      name: form.name,
+      slug: form.slug,
+      description: workspace.value?.description ?? null,
+    });
+  }
 
   const items: TabsItem[] = [
     { label: 'General', slot: 'general' },
@@ -98,20 +112,19 @@
 
           <!-- 이름 -->
           <UFormField label="Workspace Name">
-            <UInput :model-value="workspace?.name" class="w-full" />
+            <UInput v-model="form.name" class="w-full" />
           </UFormField>
 
           <!-- URL -->
           <UFormField label="Workspace URL">
             <div class="flex items-center gap-2">
               <span class="text-muted text-sm">cosider.app/w/</span>
-              <UInput :model-value="workspace?.slug" class="flex-1" />
+              <UInput v-model="form.slug" class="flex-1" />
             </div>
           </UFormField>
 
           <div class="flex justify-end">
-            <!-- TODO: 워크스페이스 정보 수정 기능 (PATCH /:slug) -->
-            <UButton disabled>Save Changes</UButton>
+            <UButton @click="onSave">Save Changes</UButton>
           </div>
         </div>
       </template>
@@ -133,13 +146,15 @@
                 <p class="font-semibold text-red-500">Delete Workspace</p>
                 <p class="text-muted text-sm">
                   Scheduling deletion will permanently remove all projects, members, and data after
-                  24 hours. You can cancel within this window.
+                  30 days. You can cancel within this window.
                 </p>
               </div>
-              <!-- TODO: 삭제 신청 모달 연결 (DELETE /:slug) -->
-              <UButton color="error" variant="outline">Delete Workspace</UButton>
+              <UButton color="error" variant="outline" @click="isDeleteModalOpen = true">
+                Delete Workspace
+              </UButton>
             </div>
           </UCard>
+          <WorkspaceDeleteModal v-model="isDeleteModalOpen" />
         </div>
       </template>
     </UTabs>

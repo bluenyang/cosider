@@ -1,5 +1,6 @@
 import type {
   ICreateWorkspaceRequest,
+  IUpdateWorkspaceRequest,
   IWorkspaceDetailResponse,
   IWorkspaceResponse,
 } from '@cosider/shared';
@@ -119,6 +120,29 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     }
   }
 
+  // 워크스페이스 정보 수정
+  async function updateWorkspace(slug: string, payload: IUpdateWorkspaceRequest): Promise<boolean> {
+    try {
+      await $api(`/api/v1/workspaces/${slug}`, {
+        method: 'PATCH',
+        body: payload,
+      });
+      await fetchWorkspaceDetail(slug);
+      toast.add({
+        title: '성공',
+        description: '워크스페이스 정보가 수정되었습니다.',
+        color: 'success',
+      });
+      return true;
+    } catch (error: unknown) {
+      const status = (error as { statusCode?: number })?.statusCode;
+      const description =
+        status === 409 ? 'slug가 이미 사용 중입니다.' : '워크스페이스 정보 수정에 실패했습니다.';
+      toast.add({ title: '오류', description, color: 'error' });
+      return false;
+    }
+  }
+
   return {
     workspaces,
     isLoading,
@@ -130,5 +154,6 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     fetchWorkspaceDetail,
     currentWorkspaceDetail,
     updateWorkspaceLogo,
+    updateWorkspace,
   };
 });
