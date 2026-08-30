@@ -7,38 +7,39 @@
   const workspaceStore = useWorkspaceStore();
   const currentSlug = computed(() => workspaceStore.currentWorkspace?.slug);
 
-  const workspaceLinks = computed(() => [
-    {
-      to: '/dashboard',
-      icon: 'i-lucide-layout-dashboard',
-      label: t('shell.nav.dashboard'),
-      match: '/dashboard',
-    },
-    {
-      to: '/projects',
-      icon: 'i-lucide-folder-git-2',
-      label: t('shell.nav.projects'),
-      match: '/projects',
-    },
-    {
-      to: '/documents',
-      icon: 'i-lucide-archive',
-      label: t('shell.nav.documents'),
-      match: '/documents',
-    },
-    {
-      to: '/settings',
-      icon: 'i-lucide-settings',
-      label: t('shell.nav.settings'),
-      match: '/settings',
-    },
-    {
-      to: `/w/${currentSlug.value}/settings`,
-      icon: 'i-lucide-settings',
-      label: t('shell.nav.workspaceSettings'),
-      match: `/w/${currentSlug.value}/settings`,
-    },
-  ]);
+  const workspaceLinks = computed(() => {
+    const links = [
+      {
+        to: '/dashboard',
+        icon: 'i-lucide-layout-dashboard',
+        label: t('shell.nav.dashboard'),
+        match: '/dashboard',
+      },
+      {
+        to: '/projects',
+        icon: 'i-lucide-folder-git-2',
+        label: t('shell.nav.projects'),
+        match: '/projects',
+      },
+      {
+        to: '/documents',
+        icon: 'i-lucide-archive',
+        label: t('shell.nav.documents'),
+        match: '/documents',
+      },
+    ];
+
+    if (currentSlug.value) {
+      links.push({
+        to: `/w/${currentSlug.value}/settings`,
+        icon: 'i-lucide-settings',
+        label: t('shell.nav.workspaceSettings'),
+        match: `/w/${currentSlug.value}/settings`,
+      });
+    }
+
+    return links;
+  });
 
   // Stub favorites — no favorites API yet
   const favorites = [
