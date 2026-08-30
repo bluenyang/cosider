@@ -1,14 +1,16 @@
 <script setup lang="ts">
   const isOpen = defineModel<boolean>({ default: false });
+  const props = defineProps<{
+    slug: string;
+  }>();
   const workspaceStore = useWorkspaceStore();
   const router = useRouter();
 
-  const slug = workspaceStore.currentWorkspace?.slug;
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
 
   async function onDelete() {
-    if (!slug) return;
-    const success = await workspaceStore.deleteWorkspace(slug);
+    if (!props.slug) return;
+    const success = await workspaceStore.deleteWorkspace(props.slug);
     if (success) {
       isOpen.value = false;
       router.push('/workspaces');

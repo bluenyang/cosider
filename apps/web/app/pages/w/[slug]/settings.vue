@@ -174,7 +174,7 @@
               </UButton>
             </div>
           </UCard>
-          <WorkspaceDeleteModal v-model="isDeleteModalOpen" />
+          <WorkspaceDeleteModal v-model="isDeleteModalOpen" :slug="slug" />
         </div>
       </template>
     </UTabs>

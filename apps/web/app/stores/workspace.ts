@@ -149,6 +149,11 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   async function deleteWorkspace(slug: string): Promise<boolean> {
     try {
       await $api(`/api/v1/workspaces/${slug}`, { method: 'DELETE' });
+      workspaces.value = workspaces.value.filter((ws) => ws.slug !== slug);
+      if (currentSlug.value === slug) {
+        setCurrent(workspaces.value[0]?.slug ?? null);
+        currentWorkspaceDetail.value = null;
+      }
       toast.add({
         title: '성공',
         description: '워크스페이스 삭제가 신청되었습니다.',
