@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import type { TabsItem } from '@nuxt/ui';
-  import { EFileVisibility } from '@cosider/shared';
+  import { EFileVisibility, EWorkspaceUserRole } from '@cosider/shared';
   import { useFileUpload } from '~/composables/use-file-upload';
 
   const route = useRoute();
@@ -82,11 +82,16 @@
     }
   }
 
-  const items: TabsItem[] = [
-    { label: 'General', slot: 'general' },
-    { label: 'Members', slot: 'members' },
-    { label: 'Danger Zone', slot: 'danger-zone' },
-  ];
+  const items = computed<TabsItem[]>(() => {
+    const tabs: TabsItem[] = [
+      { label: 'General', slot: 'general' },
+      { label: 'Members', slot: 'members' },
+    ];
+    if (workspace.value?.role === EWorkspaceUserRole.OWNER) {
+      tabs.push({ label: 'Danger Zone', slot: 'danger-zone' });
+    }
+    return tabs;
+  });
 </script>
 
 <template>
@@ -168,7 +173,7 @@
       </template>
 
       <!-- Danger Zone -->
-      <template #danger-zone>
+      <template v-if="workspace?.role === EWorkspaceUserRole.OWNER" #danger-zone>
         <div class="mt-6 max-w-xl">
           <UCard class="border-red-500/30">
             <div class="flex items-center justify-between">
