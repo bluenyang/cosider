@@ -1,12 +1,26 @@
 <script setup lang="ts">
   const route = useRoute();
   const workspaceStore = useWorkspaceStore();
+  const { resolveFileUrl } = useFileUpload();
 
   const slug = route.params.slug as string;
 
   await workspaceStore.fetchWorkspaceDetail(slug);
 
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
+  const logoUrl = ref<string | null>(null);
+
+  watch(
+    () => workspace.value?.logoImageId,
+    async (logoImageId) => {
+      if (!logoImageId) {
+        logoUrl.value = null;
+        return;
+      }
+      logoUrl.value = await resolveFileUrl(logoImageId);
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>
@@ -17,9 +31,10 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
             <div
-              class="bg-primary flex h-12 w-12 items-center justify-center rounded-xl text-lg font-bold text-white"
+              class="bg-primary flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl text-lg font-bold text-white"
             >
-              {{ workspace.name[0] }}
+              <img v-if="logoUrl" :src="logoUrl" class="h-full w-full object-cover" />
+              <span v-else>{{ workspace.name[0] }}</span>
             </div>
             <div>
               <h1 class="text-xl font-bold">{{ workspace.name }}</h1>

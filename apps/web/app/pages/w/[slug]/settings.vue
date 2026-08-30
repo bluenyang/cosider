@@ -5,19 +5,26 @@
 
   const route = useRoute();
   const workspaceStore = useWorkspaceStore();
-  const config = useRuntimeConfig();
   const toast = useToast();
-  const { upload } = useFileUpload();
+  const { upload, resolveFileUrl } = useFileUpload();
 
   const slug = route.params.slug as string;
 
   await workspaceStore.fetchWorkspaceDetail(slug);
 
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
-  const logoUrl = computed(() =>
-    workspace.value?.logoImageId
-      ? `${config.public.apiBase}/api/v1/files/${workspace.value.logoImageId}`
-      : null,
+  const logoUrl = ref<string | null>(null);
+
+  watch(
+    () => workspace.value?.logoImageId,
+    async (logoImageId) => {
+      if (!logoImageId) {
+        logoUrl.value = null;
+        return;
+      }
+      logoUrl.value = await resolveFileUrl(logoImageId);
+    },
+    { immediate: true },
   );
 
   const logoFile = ref<File | null>(null);

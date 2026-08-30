@@ -84,6 +84,18 @@ export function useFileUpload() {
     }
   }
 
+  async function resolveFileUrl(fileId: string): Promise<string | null> {
+    try {
+      const response = await $api.raw(`/api/v1/files/${fileId}`, {
+        method: 'GET',
+        redirect: 'manual',
+      });
+      return response.headers.get('location');
+    } catch {
+      return null;
+    }
+  }
+
   async function upload({ file, endpoint, visibility, onProgress }: UploadOptions) {
     if (uploading.value) {
       throw new Error('Upload is already in progress.');
@@ -105,5 +117,5 @@ export function useFileUpload() {
     }
   }
 
-  return { upload, abortUpload, uploading, progress, error };
+  return { upload, abortUpload, uploading, progress, error, resolveFileUrl };
 }
