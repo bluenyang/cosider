@@ -125,11 +125,14 @@ export const useWorkspaceStore = defineStore('workspace', () => {
   // 워크스페이스 정보 수정
   async function updateWorkspace(slug: string, payload: IUpdateWorkspaceRequest): Promise<boolean> {
     try {
-      await $api(`/api/v1/workspaces/${slug}`, {
+      const data = await $api<IWorkspaceResponse>(`/api/v1/workspaces/${slug}`, {
         method: 'PATCH',
         body: payload,
       });
-      await fetchWorkspaceDetail(slug);
+      const parsed = WorkspaceResponseSchema.parse(data) as IWorkspaceResponse;
+      workspaces.value = workspaces.value.map((ws) => (ws.slug === slug ? parsed : ws));
+      setCurrent(parsed.slug);
+      await fetchWorkspaceDetail(parsed.slug);
       toast.add({
         title: '성공',
         description: '워크스페이스 정보가 수정되었습니다.',
