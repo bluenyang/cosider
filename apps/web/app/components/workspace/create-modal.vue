@@ -125,35 +125,30 @@
   }
 
   async function onSubmit(event: FormSubmitEvent<typeof form>) {
-    try {
-      if (logoFile.value) {
-        try {
-          const { uploadToken } = await upload({
-            file: logoFile.value,
-            endpoint: '/api/v1/files/upload-url',
-            visibility: EFileVisibility.PUBLIC,
-          });
-          form.uploadToken = uploadToken;
-        } catch {
-          toast.add({
-            title: '오류',
-            description: '로고 업로드에 실패했습니다.',
-            color: 'error',
-          });
-          return;
-        }
+    if (logoFile.value) {
+      try {
+        const { uploadToken } = await upload({
+          file: logoFile.value,
+          endpoint: '/api/v1/files/upload-url',
+          visibility: EFileVisibility.PUBLIC,
+        });
+        form.uploadToken = uploadToken;
+      } catch {
+        toast.add({
+          title: '오류',
+          description: '로고 업로드에 실패했습니다.',
+          color: 'error',
+        });
+        return;
       }
+    }
 
-      const success = await workspaceStore.createWorkspace(event.data);
-      if (success) {
-        isOpen.value = false;
-      }
-    } catch {
-      toast.add({
-        title: '오류',
-        description: '워크스페이스 생성에 실패했습니다.',
-        color: 'error',
-      });
+    const success = await workspaceStore.createWorkspace({
+      ...event.data,
+      uploadToken: form.uploadToken,
+    });
+    if (success) {
+      isOpen.value = false;
     }
   }
 
