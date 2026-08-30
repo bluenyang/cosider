@@ -49,7 +49,10 @@
         endpoint: '/api/v1/files/upload-url',
         visibility: EFileVisibility.PUBLIC,
       });
-      await workspaceStore.updateWorkspaceLogo(slug, uploadToken);
+      const success = await workspaceStore.updateWorkspaceLogo(slug, uploadToken);
+      if (!success) {
+        previewUrl.value = previousPreviewUrl;
+      }
     } catch {
       previewUrl.value = previousPreviewUrl;
       toast.add({
