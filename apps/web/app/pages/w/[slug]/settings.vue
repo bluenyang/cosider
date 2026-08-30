@@ -6,6 +6,7 @@
   const route = useRoute();
   const workspaceStore = useWorkspaceStore();
   const toast = useToast();
+  const { t } = useI18n();
   const { upload, resolveFileUrl } = useFileUpload();
 
   const slug = route.params.slug as string;
@@ -63,8 +64,8 @@
     } catch {
       previewUrl.value = previousPreviewUrl;
       toast.add({
-        title: '오류',
-        description: '로고 업로드에 실패했습니다.',
+        title: t('common.error'),
+        description: t('workspace.create.logoUploadError'),
         color: 'error',
       });
     }
@@ -84,11 +85,11 @@
 
   const items = computed<TabsItem[]>(() => {
     const tabs: TabsItem[] = [
-      { label: 'General', slot: 'general' },
-      { label: 'Members', slot: 'members' },
+      { label: t('workspace.settings.general'), slot: 'general' },
+      { label: t('workspace.settings.members'), slot: 'members' },
     ];
     if (workspace.value?.role === EWorkspaceUserRole.OWNER) {
-      tabs.push({ label: 'Danger Zone', slot: 'danger-zone' });
+      tabs.push({ label: t('workspace.settings.dangerZone'), slot: 'danger-zone' });
     }
     return tabs;
   });
@@ -100,8 +101,8 @@
     <div class="mb-6 flex items-center gap-3">
       <UIcon name="i-lucide-settings" class="text-muted text-xl" />
       <div>
-        <h1 class="text-xl font-bold">Workspace Settings</h1>
-        <p class="text-muted text-sm">Manage your team and workspace configurations</p>
+        <h1 class="text-xl font-bold">{{ t('workspace.settings.title') }}</h1>
+        <p class="text-muted text-sm">{{ t('workspace.settings.description') }}</p>
       </div>
     </div>
 
@@ -110,7 +111,7 @@
       <template #general>
         <div class="mt-6 max-w-xl space-y-6">
           <p class="text-muted text-xs font-semibold tracking-widest uppercase">
-            Workspace Profile
+            {{ t('workspace.settings.profile') }}
           </p>
 
           <!-- 로고 -->
@@ -140,26 +141,26 @@
               </div>
             </UFileUpload>
             <div>
-              <p class="font-medium">Workspace Logo</p>
-              <p class="text-muted text-sm">We recommend an image of at least 400x400.</p>
+              <p class="font-medium">{{ t('workspace.settings.logo') }}</p>
+              <p class="text-muted text-sm">{{ t('workspace.settings.logoHint') }}</p>
             </div>
           </div>
 
           <!-- 이름 -->
-          <UFormField label="Workspace Name">
+          <UFormField :label="t('workspace.settings.name')">
             <UInput v-model="form.name" class="w-full" />
           </UFormField>
 
           <!-- URL -->
-          <UFormField label="Workspace URL">
+          <UFormField :label="t('workspace.settings.url')">
             <div class="flex items-center gap-2">
-              <span class="text-muted text-sm">cosider.app/w/</span>
+              <span class="text-muted text-sm">{{ t('workspace.settings.urlPrefix') }}</span>
               <UInput v-model="form.slug" class="flex-1" />
             </div>
           </UFormField>
 
           <div class="flex justify-end">
-            <UButton @click="onSave">Save Changes</UButton>
+            <UButton @click="onSave">{{ t('workspace.settings.save') }}</UButton>
           </div>
         </div>
       </template>
@@ -168,7 +169,7 @@
       <template #members>
         <div class="mt-6">
           <!-- TODO: 워크스페이스 멤버 관리 작업에서 구현 -->
-          <p class="text-muted text-sm">멤버 관리는 별도 작업에서 구현됩니다.</p>
+          <p class="text-muted text-sm">{{ t('workspace.settings.membersTodo') }}</p>
         </div>
       </template>
 
@@ -178,14 +179,13 @@
           <UCard class="border-red-500/30">
             <div class="flex items-center justify-between">
               <div>
-                <p class="font-semibold text-red-500">Delete Workspace</p>
+                <p class="font-semibold text-red-500">{{ t('workspace.settings.deleteTitle') }}</p>
                 <p class="text-muted text-sm">
-                  Scheduling deletion will permanently remove all projects, members, and data after
-                  30 days. You can cancel within this window.
+                  {{ t('workspace.settings.deleteHint') }}
                 </p>
               </div>
               <UButton color="error" variant="outline" @click="isDeleteModalOpen = true">
-                Delete Workspace
+                {{ t('workspace.settings.deleteButton') }}
               </UButton>
             </div>
           </UCard>

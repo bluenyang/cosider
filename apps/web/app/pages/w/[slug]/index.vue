@@ -1,6 +1,7 @@
 <script setup lang="ts">
   const route = useRoute();
   const workspaceStore = useWorkspaceStore();
+  const { t } = useI18n();
   const { resolveFileUrl } = useFileUpload();
 
   const slug = route.params.slug as string;
@@ -53,29 +54,29 @@
         <!-- Projects -->
         <div class="col-span-3">
           <div class="mb-4 flex items-center justify-between">
-            <h2 class="font-semibold">Projects</h2>
+            <h2 class="font-semibold">{{ t('workspace.home.projects') }}</h2>
             <!-- TODO: 프로젝트 API 완성 후 활성화 -->
             <UButton variant="outline" size="xs" icon="i-lucide-plus" disabled>
-              New Project
+              {{ t('workspace.home.newProject') }}
             </UButton>
           </div>
           <UCard>
             <div class="flex flex-col items-center justify-center py-12 text-center">
               <UIcon name="i-lucide-folder" class="text-muted mb-3 text-4xl" />
-              <p class="font-medium">No projects yet</p>
-              <p class="text-muted text-sm">Projects will appear here once created.</p>
+              <p class="font-medium">{{ t('workspace.home.noProjects') }}</p>
+              <p class="text-muted text-sm">{{ t('workspace.home.noProjectsHint') }}</p>
             </div>
           </UCard>
         </div>
 
         <!-- Recent Activity -->
         <div class="col-span-2">
-          <h2 class="mb-4 font-semibold">Recent Activity</h2>
+          <h2 class="mb-4 font-semibold">{{ t('workspace.home.recentActivity') }}</h2>
           <UCard>
             <div class="flex flex-col items-center justify-center py-12 text-center">
               <UIcon name="i-lucide-activity" class="text-muted mb-3 text-4xl" />
-              <p class="font-medium">No recent activity</p>
-              <p class="text-muted text-sm">Activity will show up as your team works.</p>
+              <p class="font-medium">{{ t('workspace.home.noActivity') }}</p>
+              <p class="text-muted text-sm">{{ t('workspace.home.noActivityHint') }}</p>
             </div>
           </UCard>
         </div>

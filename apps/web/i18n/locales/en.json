@@ -9,7 +9,8 @@
     "confirm": "Confirm",
     "login": "Login",
     "loading": "Loading...",
-    "optional": "optional"
+    "optional": "optional",
+    "error": "Error"
   },
   "shell": {
     "nav": {
@@ -71,7 +72,43 @@
       "nameRequired": "Please enter a workspace name.",
       "slugRequired": "Please enter a slug.",
       "slugTaken": "This slug is already taken.",
-      "slugNotChecked": "Please wait until the slug is checked."
+      "slugNotChecked": "Please wait until the slug is checked.",
+      "logoUploadError": "Failed to upload the logo."
+    },
+    "home": {
+      "projects": "Projects",
+      "newProject": "New Project",
+      "noProjects": "No projects yet",
+      "noProjectsHint": "Projects will appear here once created.",
+      "recentActivity": "Recent Activity",
+      "noActivity": "No recent activity",
+      "noActivityHint": "Activity will show up as your team works."
+    },
+    "settings": {
+      "title": "Workspace Settings",
+      "description": "Manage your team and workspace configurations",
+      "profile": "Workspace Profile",
+      "logo": "Workspace Logo",
+      "logoHint": "We recommend an image of at least 400x400.",
+      "name": "Workspace Name",
+      "url": "Workspace URL",
+      "urlPrefix": "cosider.app/w/",
+      "save": "Save Changes",
+      "general": "General",
+      "members": "Members",
+      "membersTodo": "Member management will be implemented in a separate task.",
+      "dangerZone": "Danger Zone",
+      "deleteTitle": "Delete Workspace",
+      "deleteHint": "Scheduling deletion will permanently remove all projects, members, and data after 30 days. You can cancel within this window.",
+      "deleteButton": "Delete Workspace"
+    },
+    "delete": {
+      "title": "Delete Workspace",
+      "confirm": "Schedule deletion of {name}.",
+      "delay": "The workspace is fully deleted 30 days after you request it.",
+      "cancelWindow": "You can cancel within 30 days.",
+      "cascade": "All related projects and data will be deleted with it.",
+      "submit": "Request deletion"
     }
   },
   "task": {

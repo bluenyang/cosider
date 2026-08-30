@@ -5,6 +5,7 @@
   }>();
   const workspaceStore = useWorkspaceStore();
   const router = useRouter();
+  const { t } = useI18n();
 
   const workspace = computed(() => workspaceStore.currentWorkspaceDetail);
 
@@ -19,26 +20,23 @@
 </script>
 
 <template>
-  <UModal v-model:open="isOpen" title="Delete Workspace">
+  <UModal v-model:open="isOpen" :title="t('workspace.delete.title')">
     <template #body>
       <div class="space-y-4">
         <p class="text-sm">
-          <span class="font-semibold text-red-500">{{ workspace?.name }}</span> 워크스페이스 삭제를
-          신청합니다.
+          {{ t('workspace.delete.confirm', { name: workspace?.name ?? '' }) }}
         </p>
         <ul class="text-muted space-y-2 text-sm">
-          <li>
-            • 삭제 신청 후 <span class="font-semibold text-white">30일</span> 뒤 완전히 삭제됩니다.
-          </li>
-          <li>• 30일 이내에 취소할 수 있습니다.</li>
-          <li>• 연관된 모든 프로젝트와 데이터가 함께 삭제됩니다.</li>
+          <li>{{ t('workspace.delete.delay') }}</li>
+          <li>{{ t('workspace.delete.cancelWindow') }}</li>
+          <li>{{ t('workspace.delete.cascade') }}</li>
         </ul>
       </div>
     </template>
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton variant="outline" @click="isOpen = false">취소</UButton>
-        <UButton color="error" @click="onDelete">삭제 신청</UButton>
+        <UButton variant="outline" @click="isOpen = false">{{ t('common.cancel') }}</UButton>
+        <UButton color="error" @click="onDelete">{{ t('workspace.delete.submit') }}</UButton>
       </div>
     </template>
   </UModal>
