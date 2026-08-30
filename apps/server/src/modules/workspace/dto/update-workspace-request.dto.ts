@@ -1,5 +1,5 @@
 import { IUpdateWorkspaceRequest } from '@cosider/shared';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateWorkspaceRequest implements IUpdateWorkspaceRequest {
   @IsString()
@@ -7,8 +7,8 @@ export class UpdateWorkspaceRequest implements IUpdateWorkspaceRequest {
   name!: string;
 
   @IsString()
-  @IsNotEmpty()
-  description!: string;
+  @IsOptional()
+  description!: string | null;
 
   @IsString()
   @IsNotEmpty()

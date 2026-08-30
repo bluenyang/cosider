@@ -64,7 +64,7 @@
     const success = await workspaceStore.updateWorkspace(slug, {
       name: form.name,
       slug: form.slug,
-      description: workspace.value?.description ?? null,
+      description: workspace.value?.description || null,
     });
 
     if (success && form.slug !== slug) {
