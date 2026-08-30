@@ -85,7 +85,9 @@ export const useWorkspaceStore = defineStore('workspace', () => {
       currentWorkspaceDetail.value = WorkspaceDetailResponseSchema.parse(
         data,
       ) as IWorkspaceDetailResponse;
+      setCurrent(slug);
     } catch {
+      currentWorkspaceDetail.value = null;
       toast.add({
         title: '오류',
         description: '워크스페이스 정보를 불러오지 못했습니다.',
